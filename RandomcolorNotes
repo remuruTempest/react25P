@@ -1,0 +1,128 @@
+This code is a simple React app that generates random colors and displays them on the screen. There are a few parts of the code to break down, so let's go through it step by step.
+
+### 1. **Imports**
+```js
+import React, { use, useState } from 'react';
+import { useEffect } from 'react';
+```
+- `useState` and `useEffect` are **React hooks** that allow us to manage state and side effects in functional components.
+  - `useState` helps store and update values in the component (e.g., color).
+  - `useEffect` is used for performing side effects (e.g., updating the color when the type of color changes).
+
+### 2. **Component: `RandomColor`**
+```js
+export default function RandomColor() {
+    // ... code here
+}
+```
+- This is the main functional component `RandomColor`, which will render the app's user interface.
+
+### 3. **State Variables**
+```js
+const [typeOfColor, setTypeOfColor] = useState("hex");
+const [color, setColor] = useState("#008000");
+```
+- `typeOfColor`: This state stores the type of color format (`hex` or `rgb`). It starts with the value `"hex"`.
+- `color`: This state stores the current color value, initially set to the color `#008000` (green in hexadecimal format).
+
+### 4. **Utility Function**
+```js
+function randomColorUtility(length) {
+    return Math.floor(Math.random() * length);
+}
+```
+- This helper function generates a random number between 0 and `length - 1`. It is used to pick random color components.
+
+### 5. **Functions to Generate Colors**
+There are two functions that create random colors, one for HEX format and one for RGB format:
+
+#### **HEX Color Generator**
+```js
+function handleCreateRandomHexColor() {
+    const hex = [1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
+    let hexColor = "#";
+
+    for (let i = 0; i < 6; i++) {
+        hexColor += hex[randomColorUtility(hex.length)];
+    }
+    console.log(hexColor);
+    setColor(hexColor);
+}
+```
+- This function generates a **random HEX color**:
+  - It picks 6 random values from the array `hex`, which contains digits `1-9` and letters `A-F`.
+  - It constructs a color string (e.g., `#A1B2C3`) and sets the `color` state with this random color.
+
+#### **RGB Color Generator**
+```js
+function handleCreateRandomRgbColor() {
+    const r = randomColorUtility(256);
+    const g = randomColorUtility(256);
+    const b = randomColorUtility(256);
+
+    setColor(`rgb(${r},${g},${b})`);
+}
+```
+- This function generates a **random RGB color**:
+  - It generates random values for red (`r`), green (`g`), and blue (`b`), each between 0 and 255.
+  - It then sets the `color` state in `rgb(r, g, b)` format (e.g., `rgb(120, 200, 50)`).
+
+### 6. **`useEffect` Hook**
+```js
+useEffect(() => {
+    if (typeOfColor === "rgb") {
+        handleCreateRandomRgbColor();
+    } else {
+        handleCreateRandomHexColor();
+    }
+}, [typeOfColor]);
+```
+- This hook runs whenever `typeOfColor` changes:
+  - If the selected color format is `"rgb"`, it generates a random RGB color.
+  - If it's `"hex"`, it generates a random HEX color.
+  - The `useEffect` ensures the color is updated when the type of color changes.
+
+### 7. **Rendering UI**
+```js
+return(
+    <div style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: color,
+    }}>
+        <button onClick={() => setTypeOfColor('hex')}>Create Hex color</button>
+        <button onClick={() => setTypeOfColor('rgb')}>Create RGB color</button>
+        <button onClick={typeOfColor === 'hex'
+            ? handleCreateRandomHexColor
+            : handleCreateRandomRgbColor
+        }>Generate Random Color</button>
+
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            fontSize: '60px',
+            marginTop: '50px',
+            flexDirection: 'column',
+            gap: '20px',
+        }}>
+            <h3>{typeOfColor === 'rgb' ? 'RGB color' : 'HEX color'}</h3>
+            <h1>{color}</h1>
+        </div>
+    </div>
+);
+```
+- The entire app is rendered inside a `<div>` with a full-page background color that is the current `color` state.
+- There are three buttons:
+  - One to switch to generating HEX colors.
+  - One to switch to generating RGB colors.
+  - One to generate a random color based on the selected type (`hex` or `rgb`).
+- It also displays the current color type (either "HEX color" or "RGB color") and the actual color value.
+
+### Summary of the App:
+- The app allows the user to generate random colors in either **HEX** or **RGB** format.
+- The color fills the entire screen as the background.
+- The user can switch between color formats and generate new random colors with the button click.
+
+Let me know if any part is unclear!
