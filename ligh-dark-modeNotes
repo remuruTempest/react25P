@@ -1,0 +1,104 @@
+Let's break down this code in simple terms. We have two separate files here: one that uses a custom hook (`useLocalStorage`) to manage light/dark mode, and another that defines the custom hook itself. I'll explain each part step by step.
+
+### 1. **LightDarkMode Component (`LightDarkMode.js`)**
+
+This is the main file where the logic for switching between light and dark modes happens.
+
+```javascript
+import React from 'react';
+import useLocalStorage from './useLocalStorage';  // Import the custom hook
+import './theme.css';  // Import the CSS for themes (styling)
+
+export default function LightDarkMode() { 
+    // The `useLocalStorage` hook is used to manage the theme in local storage
+    const [theme, setTheme] = useLocalStorage("theme", "dark");  
+    
+    // This function changes the theme when the button is clicked
+    function haddleToggleTheme() {
+        setTheme(theme === "light" ? "dark" : "light");  // Toggle between light and dark themes
+    }
+
+    console.log(theme);  // This will log the current theme (either "light" or "dark")
+
+    return (
+        <div className="light-dark-mode" data-theme={theme}>
+            <div className="container">
+                <p>Hello World!</p>
+                <button onClick={haddleToggleTheme}>
+                    Change theme
+                </button>
+            </div>
+        </div>
+    )
+}
+```
+
+### What is happening here?
+
+- **useLocalStorage("theme", "dark")**: This is a custom hook that helps store and retrieve the theme (either "light" or "dark") from the browser’s `localStorage`. If the user has previously chosen a theme, it will use that. Otherwise, it defaults to "dark".
+  
+- **haddleToggleTheme**: This is a function that toggles the theme between "light" and "dark". When the button is clicked, it checks the current theme:
+  - If it is "light", it switches to "dark".
+  - If it is "dark", it switches to "light".
+
+- **<button onClick={haddleToggleTheme}>**: When this button is clicked, the `haddleToggleTheme` function is triggered, changing the theme.
+
+- **data-theme={theme}**: This sets a custom attribute (`data-theme`) on the main `<div>` element. The value of this attribute is either "light" or "dark" depending on the current theme. This is useful for applying different CSS styles based on the theme.
+
+### 2. **useLocalStorage Custom Hook (`useLocalStorage.js`)**
+
+This file defines the custom hook `useLocalStorage`. A hook in React is a special function that lets you "hook into" React features, like managing state or side effects.
+
+```javascript
+import { useEffect, useState } from 'react';
+
+export default function useLocalStorage(key, defaultValue) {
+    const [value, setValue] = useState(() => {
+        let currentValue;
+
+        try {
+            // Try to get the value from localStorage and parse it as JSON
+            currentValue = JSON.parse(localStorage.getItem(key) || String(defaultValue));
+        } catch (error) {
+            console.log(error);
+            currentValue = defaultValue;  // If there's an error, use the default value
+        }
+        return currentValue;
+    });
+    
+    useEffect(() => {
+        // Whenever the `value` changes, update localStorage
+        localStorage.setItem(key, JSON.stringify(value));
+    }, [key, value]);  // This effect runs when either `key` or `value` changes
+
+    return [value, setValue];
+}
+```
+
+### What is happening here?
+
+- **useState**: This hook is used to create a piece of state (`value`) that will hold the current theme. It’s initialized with a function that:
+  - Tries to get the value from `localStorage` using the provided `key` (in this case, "theme").
+  - If there’s an error (like the user’s browser doesn’t support `localStorage`), it defaults to the `defaultValue` (either "dark" or "light").
+  
+- **useEffect**: This hook runs when the component first renders and also whenever the `value` changes. It updates the `localStorage` to store the new theme (`value`) so that it persists even if the page is reloaded.
+  
+- **return [value, setValue]**: This returns both the current theme (`value`) and the function (`setValue`) to update it. This is similar to how React’s `useState` works.
+
+### How It All Works Together:
+
+1. **Theme Management**: When the `LightDarkMode` component renders, it uses the `useLocalStorage` hook to get the current theme from `localStorage`. If no theme is found, it defaults to "dark".
+   
+2. **Toggling Theme**: When the user clicks the "Change theme" button, it calls `haddleToggleTheme`, which toggles the theme between "light" and "dark" and updates the `localStorage` using `setTheme`.
+
+3. **Persistence**: The theme is stored in `localStorage` (via the `useLocalStorage` hook). This means that even if the user refreshes the page, the theme they selected will remain.
+
+4. **CSS Styling**: The `data-theme={theme}` attribute on the `<div>` element allows CSS to change the styles based on the theme. For example, you might have different background colors or text colors for light and dark modes.
+
+### To Summarize:
+
+- This code helps you create a toggle for switching between light and dark modes in a web application.
+- It saves the user's preference in the browser’s `localStorage`, so the theme persists even after a page reload.
+- The custom hook `useLocalStorage` makes it easy to manage this stored data.
+
+I hope this explanation helps! Let me know if you need any further clarification.
