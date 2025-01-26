@@ -10,7 +10,8 @@ import menus from "./components/tree-view/data";
 import QRCodeGenerator from './components/qr-code-generator';
 import LightDarkMode from './components/light-dark-mode';
 import ScrollIndicator from './components/scroll-indicator';
-import TabsTest from './components/custom-tabs/tab-test'
+import TabsTest from './components/custom-tabs/tab-test';
+import ModalTest from './components/custom-modal-popup/modal-test';
 
 function App() {
   return (
@@ -37,7 +38,10 @@ function App() {
       {/* <LightDarkMode/> */}
       {/* <ScrollIndicator url={"https://dummyjson.com/products?limit=100"} />  */}
       {/* This is our custom tabs component*/}
-      <TabsTest/>
+      {/* <TabsTest/> */}
+      {/* This is our custom modal popup*/}
+      <ModalTest/>
+
 
       
     </div>
