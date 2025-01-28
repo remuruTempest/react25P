@@ -1,0 +1,143 @@
+This code is a React-based application that allows a user to search for a GitHub user by username and display their profile details like the number of public repositories, followers, and following, along with their avatar and account creation date.
+
+### Let's break it down part by part:
+
+---
+
+### 1. **Imports:**
+```javascript
+import { useEffect, useState } from "react";
+import User from "./user";
+import Styles from "./styles.css";
+```
+- **`useEffect`** and **`useState`** are React hooks. `useState` is used for managing state in functional components, and `useEffect` is used to perform side effects like fetching data or updating the DOM.
+- **`User`** is another component that displays the individual GitHub user's profile data. 
+- **`Styles`** is for styling the components (though it's not directly used in this snippet).
+
+---
+
+### 2. **Main Component (GithubProfileFider):**
+
+#### State Management
+```javascript
+const [userName, setUserName] = useState('remuruTempest');
+const [userData, setUserData] = useState(null);
+const [loading, setLoading] = useState(false);
+```
+- **`userName`**: Holds the username to search for on GitHub (starts as `'remuruTempest'`).
+- **`userData`**: Stores the profile data retrieved from GitHub (initially `null`).
+- **`loading`**: A flag to indicate if data is being fetched (`false` initially).
+
+#### Fetching Data (Async function)
+```javascript
+async function fetchGithubUserData() {
+    setLoading(true); // Set loading to true to indicate fetching is in progress
+    const res = await fetch(`https://api.github.com/users/${userName}`);
+    const data = await res.json(); // Parse the response to JSON
+
+    if (data) {
+        setUserData(data); // Save the fetched data
+        setLoading(false); // Set loading to false once data is fetched
+        setUserName(''); // Clear the username field after successful search
+    }
+    console.log(data); // Log the fetched data to the console for debugging
+}
+```
+- **`fetchGithubUserData`**: This function fetches data from the GitHub API for the given username. It uses the `fetch` function to get the data, then converts it to JSON.
+- **`setLoading(true)`** sets a loading state while fetching data.
+- **`setUserData(data)`** saves the fetched data to state once it’s successful.
+
+#### Handling Form Submission
+```javascript
+function handleSubmit() {
+    fetchGithubUserData(); // Call the fetch function when the "Search" button is clicked
+}
+```
+
+#### `useEffect` Hook
+```javascript
+useEffect(() => {
+    fetchGithubUserData(); // Fetch the data when the component is first rendered
+}, []);
+```
+- **`useEffect`** with an empty dependency array (`[]`) ensures that the `fetchGithubUserData` function is called only once when the component mounts for the first time.
+
+#### Loading State
+```javascript
+if (loading) {
+    return <h1>Loading Data Please Wait!</h1>; // Display a loading message while data is being fetched
+}
+```
+
+#### JSX Return
+```javascript
+return (
+    <div className="github-profile-container">
+        <div className="input-wrapper">
+            <input
+                name="search-by-username"
+                type="text"
+                placeholder="Search Github Username..."
+                value={userName}
+                onChange={(event) => setUserName(event.target.value)} // Update userName as user types
+            />
+            <button onClick={handleSubmit}>Search</button>
+        </div>
+        {userData !== null ? <User user={userData} /> : null} {/* Display user data if it's fetched */}
+    </div>
+);
+```
+- The main return contains an input field and a button for searching a GitHub user.
+- **`onChange`** updates the `userName` as the user types in the input.
+- If **`userData`** is not `null`, it renders the **`User`** component and passes the `userData` to it as a prop.
+
+---
+
+### 3. **User Component:**
+```javascript
+export default function User({ user }) {
+    const { avatar_url, followers, following, public_repos, name, login, created_at } = user;
+
+    const createDate = new Date(created_at);
+    return (
+        <div className="user">
+            <div>
+                <img src={avatar_url} className="avatar" alt="User" />
+            </div>
+            <div className="name-container">
+                <a href={`https://github.com/${login}`}>{name || login}</a>
+                <p>User joined on {`${createDate.getDate()} ${createDate.toLocaleString('en-us', { month: 'short' })} ${createDate.getFullYear()}`}</p>
+            </div>
+            <div className="profile-info">
+                <div>
+                    <p> Public Repos</p>
+                    <p>{public_repos}</p>
+                </div>
+                <div>
+                    <p>Follower</p>
+                    <p>{followers}</p>
+                </div>
+                <div>
+                    <p>Following</p>
+                    <p>{following}</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+```
+
+- **User Component** takes in the `user` data as props, which is passed from the main component.
+- It destructures the **`user`** data to extract relevant fields like the `avatar_url`, `followers`, `following`, `public_repos`, `name`, and `created_at`.
+- **`created_at`** is formatted into a readable date using the JavaScript `Date` object.
+- **JSX** displays the user’s avatar, name (or GitHub login if no name is set), account creation date, and stats like public repositories, followers, and following.
+
+---
+
+### Summary of Flow:
+1. When the component renders, it will either display a loading message or the user profile data.
+2. The input allows a user to type a GitHub username and search for the profile.
+3. When the "Search" button is clicked, it fetches the data for the entered username from the GitHub API.
+4. Once data is fetched, it updates the state and displays the user profile information.
+
+This is a simple yet effective way of interacting with an external API and displaying the data in a React application. Let me know if you need further clarification!
