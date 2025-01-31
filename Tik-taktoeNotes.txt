@@ -1,0 +1,175 @@
+Let's go through the code and break it down step by step. This is a **Tic-Tac-Toe** game written in React.
+
+### 1. **Imports**
+
+```javascript
+import { useEffect, useState } from "react";
+import './styles.css';
+```
+
+- **`useState`** and **`useEffect`** are React hooks that allow us to manage state and side effects (like updating the DOM or fetching data) in functional components.
+- **`'./styles.css'`** imports a CSS file to style the game.
+
+### 2. **The `Square` Component**
+
+```javascript
+function Square({ value, onClick }) {
+    return (
+        <button onClick={onClick} className="square">{value}</button>
+    );
+}
+```
+
+- **`Square`** is a functional component that renders a button (a square in the Tic-Tac-Toe grid).
+- It receives two props:
+  - **`value`**: This is the value (`'X'`, `'O'`, or an empty string) that will be displayed inside the button.
+  - **`onClick`**: This is a function that gets called when the button is clicked.
+
+### 3. **The Main `TicTacToe` Component**
+
+Now, let's dive into the main game logic:
+
+```javascript
+export default function TikTakToe() {
+    const [squares, setSquares] = useState(Array(9).fill(''));
+    const [isXTurn, setIsXTurn] = useState(true);
+    const [status, setStatus] = useState('');
+```
+
+- **`squares`**: This is an array of 9 elements (representing the Tic-Tac-Toe board). Initially, each square is an empty string (`''`).
+- **`isXTurn`**: A boolean that tells us if it's X's turn (`true` means X's turn, `false` means O's turn).
+- **`status`**: A string that shows the current game status (like "Next player is X", "X wins", etc.).
+
+#### `getWinner` function
+
+```javascript
+function getWinner(squares) {
+    const winningPattern = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        [0, 3, 6],
+        [1, 4, 7],
+    ];
+
+    for (let i = 0; i < winningPattern.length; i++) {
+        const [x, y, z] = winningPattern[i];
+
+        if (squares[x] && squares[x] === squares[y] && squares[x] === squares[z]) {
+            return squares[x];
+        }
+    }
+
+    return null;
+}
+```
+
+- This function checks if there's a winner.
+- **`winningPattern`**: This array holds the index combinations for the winning lines (rows, columns, and diagonals).
+- It loops through the winning combinations, checking if the values at those indices are the same and non-empty. If it finds a match, it returns the winner (`'X'` or `'O'`).
+
+#### `handleClick` function
+
+```javascript
+function handleClick(getCurrentSquare) {
+    let cpySquares = [...squares];
+
+    if (getWinner(cpySquares) || cpySquares[getCurrentSquare]) return;
+
+    cpySquares[getCurrentSquare] = isXTurn ? 'X' : 'O';
+    setIsXTurn(!isXTurn);
+    setSquares(cpySquares);
+}
+```
+
+- **`handleClick`** handles when a square is clicked.
+- It creates a **copy** of the `squares` array (because in React, state should not be mutated directly).
+- If the game has already been won or the clicked square is already filled, it does nothing (returns early).
+- Otherwise, it updates the clicked square with `'X'` or `'O'` depending on whose turn it is (`isXTurn`).
+- It switches the turn to the other player and updates the state with the new board.
+
+#### `handleRestart` function
+
+```javascript
+function handleRestart() {
+    setIsXTurn(true);
+    setSquares(Array(9).fill(''));
+}
+```
+
+- This function is called when the "Restart" button is clicked. It resets the board to the initial state, with all squares empty, and sets the turn to X (`isXTurn = true`).
+
+#### `useEffect` Hook
+
+```javascript
+useEffect(() => {
+    if (!getWinner(squares) && squares.every((item) => item !== "")) {
+        setStatus(`This is a draw! Please Restart the game`);
+    } else if (getWinner(squares)) {
+        setStatus(`winner is ${getWinner(squares)}. Please restart the game`);
+    } else {
+        setStatus(`Next player is ${isXTurn ? 'X' : 'O'}`);
+    }
+}, [squares, isXTurn]);
+```
+
+- **`useEffect`** runs whenever **`squares`** or **`isXTurn`** changes. This means it will update the game status every time a player makes a move.
+- If there is a winner, it shows the winner's name.
+- If all squares are filled and there's no winner, it indicates a draw.
+- If the game is still ongoing, it displays whose turn it is.
+
+### 4. **Rendering the Game**
+
+```javascript
+return (
+    <div className="tic-tac-toe-container">
+        <div className="row">
+            <Square value={squares[0]} onClick={() => handleClick(0)} />
+            <Square value={squares[1]} onClick={() => handleClick(1)} />
+            <Square value={squares[2]} onClick={() => handleClick(2)} />
+        </div>
+
+        <div className="row">
+            <Square value={squares[3]} onClick={() => handleClick(3)} />
+            <Square value={squares[4]} onClick={() => handleClick(4)} />
+            <Square value={squares[5]} onClick={() => handleClick(5)} />
+        </div>
+
+        <div className="row">
+            <Square value={squares[6]} onClick={() => handleClick(6)} />
+            <Square value={squares[7]} onClick={() => handleClick(7)} />
+            <Square value={squares[8]} onClick={() => handleClick(8)} />
+        </div>
+
+        <h1>{status}</h1>
+        <button onClick={handleRestart}>Restart</button>
+    </div>
+);
+```
+
+- Here, we render 9 `Square` components in a 3x3 grid, passing the current value of each square and an `onClick` handler that calls `handleClick` with the index of the clicked square.
+- The game status (who’s turn it is, winner, or draw) is displayed in an `<h1>` element.
+- A "Restart" button is included to reset the game.
+
+### Recap
+
+- **State Management**: The game uses React's `useState` hook to keep track of the board state, whose turn it is, and the game status.
+- **Event Handling**: The `handleClick` function is responsible for updating the board when a player clicks a square.
+- **Winner Logic**: The `getWinner` function checks the board after every move to see if there’s a winner.
+- **Side Effects**: The `useEffect` hook ensures the game status is updated after every move.
+
+---
+
+### Example Walkthrough
+
+1. Initially, the board is empty: `['', '', '', '', '', '', '', '', '']`.
+2. X clicks the first square: the board becomes `['X', '', '', '', '', '', '', '', '']`, and it’s O's turn.
+3. O clicks the second square: the board becomes `['X', 'O', '', '', '', '', '', '', '']`, and it’s X's turn.
+4. The game continues until either there’s a winner, a draw, or the player decides to restart.
+
+---
+
+This code is a great example of using React for building an interactive game with state, event handling, and rendering logic. If you have any questions or need further explanation, feel free to ask!
