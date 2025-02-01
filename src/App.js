@@ -15,6 +15,8 @@ import ModalTest from './components/custom-modal-popup/modal-test';
 import GithubProfileFider from './components/github-profile-finder';
 import SearchAutoComplete from './components/search-auto-complete';
 import Tiktaktoe from './components/tik-tak-toe';
+import FeaturedFlags from './components/Feature-flag';
+import FeaturedFlagGlobalState from './components/Feature-flag/context';
 function App() {
   return (
     <div className="App">
@@ -48,7 +50,13 @@ function App() {
       {/* This is our Serch Auto Complete*/}
       {/* <SearchAutoComplete/> */}
       {/* This is our Tik tak toe*/}
-      <Tiktaktoe/>
+      {/* <Tiktaktoe/> */}
+      {/* This is our Featured Flags*/}
+      <FeaturedFlagGlobalState>
+        <FeaturedFlags/>
+      </FeaturedFlagGlobalState>
+
+
 
 
 
