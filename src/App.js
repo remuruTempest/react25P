@@ -17,6 +17,7 @@ import SearchAutoComplete from './components/search-auto-complete';
 import Tiktaktoe from './components/tik-tak-toe';
 import FeaturedFlags from './components/Feature-flag';
 import FeaturedFlagGlobalState from './components/Feature-flag/context';
+import UseFetchHookTest from './components/use-fetch/test';
 function App() {
   return (
     <div className="App">
@@ -52,9 +53,15 @@ function App() {
       {/* This is our Tik tak toe*/}
       {/* <Tiktaktoe/> */}
       {/* This is our Featured Flags*/}
-      <FeaturedFlagGlobalState>
+      {/* <FeaturedFlagGlobalState>
         <FeaturedFlags/>
-      </FeaturedFlagGlobalState>
+      </FeaturedFlagGlobalState> */}
+
+      {/* This is our custom hook*/}
+      <UseFetchHookTest/>
+
+
+
 
 
 
