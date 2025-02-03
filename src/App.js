@@ -18,6 +18,7 @@ import Tiktaktoe from './components/tik-tak-toe';
 import FeaturedFlags from './components/Feature-flag';
 import FeaturedFlagGlobalState from './components/Feature-flag/context';
 import UseFetchHookTest from './components/use-fetch/test';
+import UseOnClickOutsideTest from './components/use-outside-click/test';
 function App() {
   return (
     <div className="App">
@@ -59,6 +60,10 @@ function App() {
 
       {/* This is our custom hook*/}
       <UseFetchHookTest/>
+
+      {/* This is our Onclick Outside hook test*/}
+
+      <UseOnClickOutsideTest/>
 
 
 
