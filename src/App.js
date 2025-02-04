@@ -19,6 +19,7 @@ import FeaturedFlags from './components/Feature-flag';
 import FeaturedFlagGlobalState from './components/Feature-flag/context';
 import UseFetchHookTest from './components/use-fetch/test';
 import UseOnClickOutsideTest from './components/use-outside-click/test';
+import UseWindowResizeTest from './components/use-window-resize/test';
 function App() {
   return (
     <div className="App">
@@ -59,11 +60,15 @@ function App() {
       </FeaturedFlagGlobalState> */}
 
       {/* This is our custom hook*/}
-      <UseFetchHookTest/>
+      {/* <UseFetchHookTest/> */}
 
       {/* This is our Onclick Outside hook test*/}
 
-      <UseOnClickOutsideTest/>
+      {/* <UseOnClickOutsideTest/> */}
+
+      {/* This is our widow size hook test*/}
+      <UseWindowResizeTest/>
+
 
 
 
