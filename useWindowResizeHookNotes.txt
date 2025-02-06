@@ -1,0 +1,127 @@
+Let’s break down this code step by step to understand the logic and process, especially if you're a beginner in JavaScript and React.
+
+### File 1: `UseWindowResize.js`
+
+```javascript
+import { useLayoutEffect, useState } from "react";
+```
+Here, you're importing two important hooks from React:
+- **`useState`**: This is used to create state variables in a functional component.
+- **`useLayoutEffect`**: This is similar to `useEffect`, but it is called synchronously after all DOM mutations, which is useful when you need to measure the DOM (like the window size in this case) before the browser repaints the screen.
+
+### Defining the `UseWindowResize` function
+
+```javascript
+export default function UseWindowResize() {
+    const [windowSize, setWindowSize] = useState({
+        width: 0,
+        height: 0
+    });
+```
+- `windowSize` is a state object that will hold the current dimensions (width and height) of the window.
+- Initially, the width and height are set to `0`.
+
+### `handleResize` function
+
+```javascript
+    function handleResize() {
+        setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+    }
+```
+- This function updates the `windowSize` state to the current width and height of the window by using `window.innerWidth` and `window.innerHeight`. These properties return the dimensions of the browser window.
+- `setWindowSize` is used to update the state.
+
+### `useLayoutEffect` hook
+
+```javascript
+    useLayoutEffect(() => {
+        handleResize(); // Set the initial window size when the component is mounted
+
+        // Add an event listener for window resize
+        window.addEventListener('resize', handleResize);
+
+        // Clean up the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, []);
+```
+
+- The **`useLayoutEffect`** hook is used here to run side effects (code that interacts with the outside world, like updating the window size on resize).
+- The effect:
+  1. First calls `handleResize()` to set the initial window size.
+  2. Then, it adds an event listener that listens for `resize` events (which happens every time the window is resized) and calls `handleResize` to update the state with the new dimensions.
+  3. The cleanup function inside the `return` statement ensures that the event listener is removed when the component is unmounted, preventing memory leaks or unnecessary listeners.
+
+The empty array `[]` as the second argument ensures that this effect runs only once when the component is mounted (equivalent to `componentDidMount` in class components).
+
+### Return statement
+
+```javascript
+    return windowSize;
+}
+```
+
+- The `windowSize` object (containing width and height) is returned. This can be used by any component that calls `UseWindowResize`.
+
+### File 2: `UseWindowResizeTest.js`
+
+```javascript
+import UseWindowResize from ".";
+```
+- You're importing the `UseWindowResize` custom hook from the first file.
+
+### `UseWindowResizeTest` component
+
+```javascript
+export default function UseWindowResizeTest() {
+    const windowSize = UseWindowResize(); // Call the custom hook to get window dimensions
+    const { width, height } = windowSize; // Destructure width and height from the returned windowSize
+
+    return (
+        <div>
+            <h1>Window resize Hook</h1>
+            <p>Width is {width}</p>
+            <p>Height is {height}</p>
+        </div>
+    );
+}
+```
+
+- The `UseWindowResize` custom hook is called to retrieve the current window size.
+- `width` and `height` are extracted from `windowSize` using destructuring.
+- The component renders a heading and two paragraphs showing the current width and height of the window.
+
+### Putting it all together
+
+1. **`UseWindowResize`**: A custom hook that listens for window resize events and keeps track of the current window size (width and height). It returns an object with `width` and `height` values that update dynamically as the window is resized.
+2. **`UseWindowResizeTest`**: A component that uses this hook to display the current window size in real-time.
+
+### Example Behavior
+
+1. When the app first loads, the page will show something like this:
+    ```
+    Window resize Hook
+    Width is 0
+    Height is 0
+    ```
+
+2. As soon as the window size changes, the width and height values will update and reflect the new dimensions:
+    ```
+    Window resize Hook
+    Width is 1200
+    Height is 800
+    ```
+
+3. If you resize the browser window, the displayed `Width` and `Height` values will continue to update in real-time.
+
+### Why use `useLayoutEffect`?
+
+- It’s important to use `useLayoutEffect` instead of `useEffect` because `useLayoutEffect` ensures the size is updated **before** the browser re-renders the page. This is helpful when you want to immediately apply changes after measuring the DOM and avoid a flicker or flash of incorrect content on resize.
+
+### Summary
+
+This code demonstrates how to use a custom hook (`UseWindowResize`) in React to track the window’s width and height in real-time, and display it in a component (`UseWindowResizeTest`). By using `useLayoutEffect`, it ensures that the window dimensions are updated before the layout is painted. The code is reusable and can be easily extended to track other window properties or events.
