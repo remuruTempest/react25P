@@ -1,3 +1,6 @@
+Weather keeps you informed about conditions including temperature, rain, snow, and wind. Check out the forecast by the hour for the next ten days. Use maps to help you explore weather patterns in your area. Stay notified about upcoming adverse conditions.
+
+
 This code is a React component that retrieves and displays weather data based on user input or a default city (Bangalore). It uses the `useState` and `useEffect` hooks to manage state and side effects. Let’s break it down step by step and explain the logic behind the code.
 
 ### Imports
