@@ -1,18 +1,172 @@
 App.jsCodes
 
 
+import React, { useState } from 'react';
+import RecipeList from './RecipeList';
+import SearchBar from './SearchBar';
+import './App.css';
 
-<div>
-      <div className="min-h-screen p-6 bg-white text-gray-600 text-lg">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/recipe-item/:id" element={<Details />} />
-        </Routes>
+function App() {
+  // Sample recipes data
+  const recipes = [
+    {
+      title: "Spaghetti Carbonara",
+      image: "https://via.placeholder.com/300",
+      ingredients: ["Spaghetti", "Eggs", "Bacon", "Parmesan", "Garlic"],
+      steps: ["Boil spaghetti.", "Fry bacon.", "Mix eggs and cheese.", "Combine everything."]
+    },
+    {
+      title: "Vegetable Stir Fry",
+      image: "https://via.placeholder.com/300",
+      ingredients: ["Carrots", "Bell Peppers", "Broccoli", "Soy Sauce", "Ginger"],
+      steps: ["Chop vegetables.", "Stir fry with soy sauce.", "Serve with rice."]
+    },
+    {
+      title: "Chocolate Cake",
+      image: "https://via.placeholder.com/300",
+      ingredients: ["Flour", "Cocoa", "Sugar", "Butter", "Eggs"],
+      steps: ["Mix dry ingredients.", "Add wet ingredients.", "Bake at 350°F for 30 mins."]
+    }
+  ];
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter recipes based on search term
+  const filteredRecipes = recipes.filter(recipe =>
+    recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recipe.ingredients.some(ingredient => ingredient.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  return (
+    <div className="App">
+      <header>
+        <h1>Food Recipe Website</h1>
+      </header>
+
+      <div className="container">
+        {/* SearchBar Component */}
+        <SearchBar setSearchTerm={setSearchTerm} />
+
+        {/* RecipeList Component */}
+        <RecipeList recipes={filteredRecipes} />
       </div>
     </div>
+  );
+}
 
+export default App;
+
+
+
+
+//===========================================================================================
+
+recipeList.js
+import React from 'react';
+
+function RecipeList({ recipes }) {
+  return (
+    <div id="recipe-list">
+      {recipes.map((recipe, index) => (
+        <div key={index} className="recipe-card">
+          <img src={recipe.image} alt={recipe.title} />
+          <div className="recipe-title">{recipe.title}</div>
+          <div className="recipe-details">
+            <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}<br />
+            <strong>Steps:</strong> {recipe.steps.join(", ")}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default RecipeList;
+
+
+//===========================================================================================
+
+Searchbar.js
+
+
+import React from 'react';
+
+function SearchBar({ setSearchTerm }) {
+  return (
+    <input
+      type="text"
+      id="search-bar"
+      placeholder="Search recipes..."
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  );
+}
+
+export default SearchBar;
+
+
+//=========================================================================================
+
+css
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.recipe-card {
+  background-color: white;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 30%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.recipe-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.recipe-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.recipe-details {
+  font-size: 14px;
+  color: #555;
+}
+
+#search-bar {
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
 
 
 
