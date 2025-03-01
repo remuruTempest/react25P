@@ -174,3 +174,8 @@ Its still could be subjected to change since its still not complete
 
 
 
+Resources:
+
+https://codingtorque.com/food-recipe-app-using-reactjs-and-tailwindcss/
+
+
